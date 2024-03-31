@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -13,40 +15,29 @@ import java.util.HashSet;
 @RestController
 @Slf4j
 public class UserController {
-    private HashMap<Integer, User> users = new HashMap<>();
-    private HashSet<User> usersSet;
-    private int nextId = 1;
+    private final UserStorage userStorage;
+
+    @Autowired
+    public UserController(UserStorage userStorage) {
+        this.userStorage = userStorage;
+    }
 
     @GetMapping("/users")
     public Collection<User> getAllUsers() {
-        return users.values();
+        return userStorage.getUsers();
     }
 
     @PostMapping("/users")
     public User create(@RequestBody @Valid User user) {
         log.info("Создание пользователя");
 
-        user.setId(nextId++);
-
-        if (user.getName() == null || user.getName().isBlank())
-            user.setName(user.getLogin());
-
-        users.put(user.getId(), user);
-
-        return user;
+        return userStorage.create(user);
     }
 
     @PutMapping("/users")
-    public User update(@RequestBody @Valid User user) throws NotFoundExeption {
+    public User update(@RequestBody @Valid User user) {
         log.info("Обновление пользователя");
 
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-        } else {
-            log.warn("Пользователя с таким id не существует");
-            throw new NotFoundExeption();
-        }
-
-        return user;
+        return userStorage.update(user);
     }
 }
