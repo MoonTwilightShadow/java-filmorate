@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.annotation.Login;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
+import java.util.HashSet;
 
 /**
  * User.
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 
 @Data
 public class User {
-    private int id;
+    private Integer id;
     @Email
     private String email;
     @Login
@@ -21,4 +22,5 @@ public class User {
     private String name;
     @PastOrPresent
     private LocalDate birthday;
+    private HashSet<Integer> friends = new HashSet<>();
 }
