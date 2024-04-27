@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.annotation.Login;
 
@@ -13,6 +14,7 @@ import java.util.HashSet;
  */
 
 @Data
+@AllArgsConstructor
 public class User {
     private Integer id;
     @Email
@@ -22,5 +24,5 @@ public class User {
     private String name;
     @PastOrPresent
     private LocalDate birthday;
-    private HashSet<Integer> friends = new HashSet<>();
+    //private HashSet<Integer> friends = new HashSet<>();
 }

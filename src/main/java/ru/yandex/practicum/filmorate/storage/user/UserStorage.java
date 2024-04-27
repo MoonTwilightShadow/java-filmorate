@@ -12,6 +12,8 @@ public interface UserStorage {
 
     public User delete(User user);
 
+    public boolean contains(int id);
+
     public User getUser(int id);
 
     public List<User> getUsers();

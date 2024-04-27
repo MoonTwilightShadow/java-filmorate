@@ -26,7 +26,7 @@ public class ExeptiponHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse incorectParameterHandle(final IncorrectParameterException e) {
         return new ErrorResponse(
                 String.format("Ошибка с полем \"%s\".", e.getParameter())
