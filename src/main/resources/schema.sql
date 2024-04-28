@@ -21,8 +21,7 @@ create table if not exists genre (
 
 create table if not exists genre_films (
   film_id integer references films (id) on delete cascade, 
-  genre_id integer references genre (id) on delete cascade,
-  UNIQUE (film_id, genre_id)
+  genre_id integer references genre (id) on delete cascade
 );
 
 create table if not exists users (

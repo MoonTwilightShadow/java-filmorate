@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film.impl;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.FilmGenre;
@@ -13,8 +13,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
-public class FilmGenreBDStorage {
+@AllArgsConstructor
+public class FilmGenreDBStorage {
     private final JdbcTemplate jdbcTemplate;
     private final GenreDBStorage genreDBStorage;
 
@@ -34,7 +34,7 @@ public class FilmGenreBDStorage {
     }
 
     public void addGenreToFilm(Integer filmId, Integer genreId) {
-        String sqlQuery = "insert into genre_films (film_id, genre_id) values(?, ?) on conflict do nothing";
+        String sqlQuery = "merge into genre_films KEY (film_id, genre_id) values (?, ?)";
         jdbcTemplate.update(sqlQuery, filmId, genreId);
     }
 

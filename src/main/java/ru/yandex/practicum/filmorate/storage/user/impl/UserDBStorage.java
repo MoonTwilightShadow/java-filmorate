@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.user.impl;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -9,20 +11,29 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Component
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserDBStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
     public User create(User user) {
-        int id = jdbcTemplate.queryForObject("insert into users (email, login, name, birthday) values (?, ?, ?, ?) returning id",
-                (rs, rowNum) -> rs.getInt("id"), user.getEmail(), user.getLogin(), user.getName(), user.getBirthday());
+        Map<String, Object> values = new HashMap<>();
+        values.put("email", user.getEmail());
+        values.put("login", user.getLogin());
+        values.put("name", user.getName());
+        values.put("birthday", user.getBirthday());
 
-        user.setId(id);
+        SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("users")
+                .usingGeneratedKeyColumns("id");
+
+        user.setId(simpleJdbcInsert.executeAndReturnKey(values).intValue());
+
         return user;
     }
 
@@ -45,6 +56,7 @@ public class UserDBStorage implements UserStorage {
     public boolean contains(int id) {
         return jdbcTemplate.queryForRowSet("select * from users where id = ?", id).next();
     }
+
     @Override
     public User getUser(int id) {
         SqlRowSet rs = jdbcTemplate.queryForRowSet("select * from users where id = ?", id);
@@ -88,7 +100,7 @@ public class UserDBStorage implements UserStorage {
 
     @Override
     public List<User> commonFriends(Integer id, Integer otherId) {
-        return jdbcTemplate.query("select u.id, u.email, u.login, u.\"name\" , u.birthday from friends as f " +
+        return jdbcTemplate.query("select u.id, u.email, u.login, u.name , u.birthday from friends as f " +
                         "join users as u on f.friend_id = u.id where user_id = ? and friend_id in (select friend_id from friends where user_id = ?);",
                 userRowMapper(), id, otherId);
     }
