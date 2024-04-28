@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.service.user.UserService;
 import javax.validation.Valid;
 import java.util.List;
 
+@SuppressWarnings("checkstyle:RightCurly")
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -35,7 +36,10 @@ public class UserController {
     }
 
     @DeleteMapping
-    public User delete(@RequestBody User user) { return userService.delete(user); }
+    public User delete(@RequestBody User user) {
+        return userService.delete(user);
+    }
+
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
         userService.addFriend(id, friendId);
