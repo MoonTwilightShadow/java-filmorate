@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
@@ -27,7 +26,7 @@ public class MpaDBStorage {
             Mpa mpa = new Mpa(mpaRows.getInt("mpa_id"), mpaRows.getString("mpa_name"));
             return Optional.of(mpa);
         } else {
-           return Optional.empty();
+            return Optional.empty();
         }
     }
 
