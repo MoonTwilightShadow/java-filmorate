@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -49,8 +50,7 @@ public class FilmServiceImpl implements FilmService {
     public Film create(Film film) {
         log.info("Добавление фильма");
 
-        Integer mpaId = film.getMpa().getId();
-        if (mpaId == null || mpaId > 5) {
+        if (!Objects.nonNull(film.getMpa().getId()) || film.getMpa().getId() > 5) {
             throw new IncorrectParameterException("mpa");
         }
 
