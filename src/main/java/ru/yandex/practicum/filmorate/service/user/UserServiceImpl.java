@@ -82,7 +82,6 @@ public class UserServiceImpl implements UserService {
         log.info("Обновление пользователя");
 
         checkId(user.getId(), "id");
-
         return userStorage.update(user);
     }
 
@@ -99,7 +98,7 @@ public class UserServiceImpl implements UserService {
         if (id == null) {
             log.warn("Пустой параметр " + param);
             throw new IncorrectParameterException(param);
-        } else if (userStorage.getUser(id) == null) {
+        } else if (!userStorage.contains(id)) {
             log.warn("Пользователя с таким " + param + " не существует");
             throw new NotFoundExeption();
         }

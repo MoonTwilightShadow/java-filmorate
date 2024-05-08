@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeption.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exeption.NotFoundExeption;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -47,6 +49,19 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public Film create(Film film) {
         log.info("Добавление фильма");
+
+        if (!Objects.nonNull(film.getMpa().getId()) || film.getMpa().getId() > 5) {
+            throw new IncorrectParameterException("mpa");
+        }
+
+        if (film.getGenres() != null) {
+            for (Genre genre : film.getGenres()) {
+                if (genre.getId() != null && genre.getId() > 6) {
+                    throw new IncorrectParameterException("genres");
+                }
+            }
+        }
+
         return filmStorage.create(film);
     }
 
@@ -88,7 +103,7 @@ public class FilmServiceImpl implements FilmService {
             log.warn("Не задано id");
             throw new IncorrectParameterException("id");
         }
-        if (filmStorage.getFilm(id) == null) {
+        if (!filmStorage.containsFilm(id)) {
             log.warn("Фмльма с таким id не существует");
             throw new NotFoundExeption();
         }
@@ -99,7 +114,7 @@ public class FilmServiceImpl implements FilmService {
             log.warn("Не задано userId");
             throw new IncorrectParameterException("userId");
         }
-        if (userStorage.getUser(id) == null) {
+        if (!userStorage.contains(id)) {
             log.warn("Пользователя с таким userId не существует");
             throw new NotFoundExeption();
         }
